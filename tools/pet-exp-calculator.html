@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pets-Exp Calculator</title>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <script src="../js/script.js"></script>
+  <link rel="stylesheet" href="../css/essential.css">
+  <link rel="stylesheet" href="../css/tools.css">
+</head>
+
+<body>
+  <div id="loader">
+    <div></div>
+    <div></div>
+    <div></div>
+  </div>
+  <div class="background"></div>
+  <div class="top"></div>
+  <div class="sidebar" id="sidebar"></div>
+
+  <div id="sidebar-overlay" onclick="toggleSidebar()"></div>
+  <button id="float">
+    <span class="material-icons" id="sweepBtn" style="background: #222; border-radius: 50px;">chevron_right</span>
+    <span class="material-icons" id="homeBtn" onclick="homeBtn()">home</span>
+    <span class="material-icons" id="ai" onclick="aiBtn()">smart_toy</span>
+    <span class="material-icons" id="scrollToTopBtn">north</span>
+  </button>
+
+  <div class="gap"></div>
+  <div class="container">
+    <h3>Pets Experience Calculator</h3>
+    <div class="inner-container">
+      <p style="margin-bottom: 15px; font-size: 12.5px; color: #e0db36; text-align: center;">Note: <em>The Exp you see is as per legendary pet</p>
+      <div class="grp-main">
+        <div class="grp">
+          <label for="currentLevel">Current Pet Level: <span id="currentLevelValue">1</span></label><br>
+          <input id="currentLevel" class="box" type="range" min="1" max="100" value="1"><br>
+        </div>
+        <div class="grp">
+          <label for="requiredLevel">Required Pet Level: <span id="requiredLevelValue">1</span></label><br>
+          <input id="requiredLevel" class="box" type="range" min="1" max="100" value="1">
+        </div>
+      </div>
+      <div class="grp">
+        <label>Current Experience:</label>
+        <input id="currentExp" type="number" min="0" max="100">
+      </div>
+      <div class="grp">
+        <button id="calcBtn" class="btn" style="cursor:pointer;">Result</button>
+        <div class="result" id="resultBox">Result</div>
+      </div>
+    </div>
+  </div>
+
+  <div id="footer"></div>
+  <script>
+    let skillData = [];
+
+    fetch('../skill-exp/Pets-exp.json')
+      .then(res => res.json())
+      .then(data => {
+        skillData = data;
+      });
+
+    const currentLevel = document.getElementById('currentLevel');
+    const requiredLevel = document.getElementById('requiredLevel');
+    const currentLevelValue = document.getElementById('currentLevelValue');
+    const requiredLevelValue = document.getElementById('requiredLevelValue');
+    const calcBtn = document.getElementById('calcBtn');
+    const resultBox = document.getElementById('resultBox');
+
+    function updateSliderTrack(slider) {
+      const min = slider.min ? Number(slider.min) : 0;
+      const max = slider.max ? Number(slider.max) : 100;
+      const val = Number(slider.value);
+      const percent = ((val - min) * 100) / (max - min);
+      slider.style.setProperty('--percent', percent + '%');
+    }
+
+    document.querySelectorAll('input[type=range]').forEach(slider => {
+      updateSliderTrack(slider);
+      slider.addEventListener('input', () => updateSliderTrack(slider));
+      updateSliderTrack(requiredLevelValue);
+    });
+
+    // Update slider display
+    currentLevel.addEventListener('input', () => {
+      currentLevelValue.textContent = currentLevel.value;
+      if (parseInt(requiredLevel.value) < parseInt(currentLevel.value)) {
+        requiredLevel.value = currentLevel.value;
+        requiredLevelValue.textContent = requiredLevel.value;
+      }
+      requiredLevel.min = currentLevel.value;
+
+    });
+
+    requiredLevel.addEventListener('input', () => {
+      requiredLevelValue.textContent = requiredLevel.value;
+    });
+
+    calcBtn.addEventListener('click', () => {
+      const curLvl = parseInt(currentLevel.value);
+      const reqLvl = parseInt(requiredLevel.value);
+      const cExp = document.getElementById("currentExp");
+      const val = Number(cExp.value);
+
+      if (reqLvl < curLvl) {
+        resultBox.textContent = 'Required level must be greater than or equal to current level.';
+        return;
+      }
+
+      if (curLvl === reqLvl) {
+        resultBox.textContent = 'You are already at the required level!';
+        return;
+      }
+
+      const curTotal = skillData[curLvl - 1].total_exp_required;
+      const reqTotal = skillData[reqLvl - 1].total_exp_required;
+      let xpNeeded = reqTotal - curTotal;
+
+
+      cExp.max = xpNeeded;
+
+      if (xpNeeded <= 0) {
+        resultBox.textContent = 'You have already reached or exceeded the required level!';
+        return;
+      }
+
+      try {
+        if (xpNeeded > val) {
+          const remaining = xpNeeded - val;
+          resultBox.textContent = `The Exp needed to reach level ${requiredLevel.value} is: ${remaining}`;
+        } else if (xpNeeded < val) {
+          throw new Error("You have already reached that level!");
+        } else {
+          resultBox.textContent = `Perfect! You've got the exact amount of Exp required!`;
+        }
+      } catch (error) {
+        resultBox.textContent = error.message;
+      }
+    });
+  </script>
+
+</body>
+
+</html>

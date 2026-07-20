@@ -1,0 +1,443 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Seller Access</title>
+    <head>
+    <meta charset="UTF-8">
+    <title>Seller</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script src="js/script.js"></script>
+    <link rel="stylesheet" href="css/essential.css">
+</head>
+<style>
+:root {
+    --guides-blue: #007bff;
+    --title: #0056b3;
+    --white: #ffffff;
+    --guides-blue-hover: #0056b3;
+    --background: #f4f4f4;
+    --blurry-boxy-thingy: rgba(200, 200, 200, 0.1);
+}
+
+.dark-mode {
+    --blurry-boxy-thingy: rgba(0, 0, 0, 0.5);
+    --title: #007bff;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: var(--background);
+    background: url("../Backgrounds/IMG_4502.webp");
+    background-size: cover;
+    background-position-x: center;
+    background-repeat: no-repeat;
+}
+
+.top-button-container {
+    margin-bottom: 20px;
+    margin-top: 20px;
+    width: 100%;
+    text-align: center;
+}
+
+.top-button {
+    background-color: var(--guides-blue);
+    color: var(--white);
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.top-button:hover {
+    background-color: var(--guides-blue-hover);
+}
+
+.home-icon {
+    font-size: 2.5rem;
+    cursor: pointer;
+}
+
+.title {
+    font-size: 2.5rem;
+    margin: 20px 0;
+    color: var(--guides-blue);
+    text-align: center;
+}
+
+p { 
+    font-size: 1.2rem;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.card p{
+    font-size: 14px;
+    margin: 5px 0;
+    text-align: left;
+}
+.blurry-boxy-thingy {
+    padding: 20px;
+    box-sizing: border-box;
+    border-radius: 24px;
+    background: var(--blurry-boxy-thingy);
+    backdrop-filter: blur(10px); 
+}
+
+.container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    align-items: center;
+}
+
+.card {
+    position: relative;
+    width: calc(100% / 3 - 20px);
+    max-width: 300px;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.15);
+    transition: transform 0.3s ease-in-out;
+    cursor: pointer;
+}
+
+.card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    display: block;
+}
+
+.card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.8));
+}
+
+.card-content {
+    position: absolute;
+    bottom: 15px;
+    left: 15px;
+    color: var(--white);
+    z-index: 2;
+    text-align: left;
+    padding: 10px;
+}
+
+.card h3 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.card p {
+    font-size: 14px;
+    margin: 5px 0;
+}
+
+.card button {
+    background-color: var(--guides-blue);
+    color: var(--white);
+    border: none;
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    display: inline-block;
+}
+
+.card button:hover {
+    background-color: var(--guides-blue-hover);
+}
+
+.card:hover {
+    transform: scale(1.05);
+}
+
+@media (max-width: 768px) {
+    body {
+        align-items: flex-start;
+        height: auto;
+    }
+
+    .card-container {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .card {
+        width: 90%;
+        max-width: 400px;
+    }
+}
+
+h2 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    color: var(--guides-blue);
+    text-align: center;
+}
+
+#inputForm {
+    width: 100%;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid var(--guides-blue);
+    font-size: 16px;
+    margin-bottom: 20px;
+    box-sizing: border-box;
+}
+
+label {
+    font-size: 1.2rem;
+    color: var(--guides-blue);
+    margin-bottom: 10px;
+    display: block;
+}
+
+input {
+    width: 100%;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid var(--guides-blue);
+    font-size: 16px;
+    margin-bottom: 20px;
+    box-sizing: border-box;
+    background-color: var(--white);
+}</style>
+
+<body class="body">
+    <div id="loader">
+        <div></div>
+        <div></div>
+        <div></div>
+    </div>
+    <div class="top"></div>
+
+    <div class="sidebar" id="sidebar"></div>
+    <div class="successBox"><p id="successText"></p></div>
+    <div id="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+    <div class="gap"></div>
+    <div class="container">
+        <div class="container blurry-boxy-thingy">
+            <h1 class="h1">Seller Profile Editor</h1><br>
+            <p class="p">Enter your access code to edit your seller profile. If you don't have an access code, please contact an admin.</p>
+            <br>
+            <h2 class="h2">Enter Access Code</h2>
+            <input class="input" type="text" id="seller-edit-accessCodeInput" placeholder="Access Code">
+            <button onclick="checkAccessCode()" id="submit-button">Submit</button>
+            <div id="seller-edit-result"></div>
+        </div>
+    </div>
+    <div id="footer"></div>
+    <script>
+        let allSellers = [];
+        let currentAccessCode = '';
+        let id = 0;
+
+        async function checkAccessCode() {
+            const [sellerRes] = await Promise.all([
+                fetch('ranksellers/ranksellers.txt')
+            ]);
+            const sellerData = await sellerRes.text();
+            allSellers = JSON.parse(sellerData);
+            const code = document.getElementById('seller-edit-accessCodeInput').value.trim().toUpperCase();
+            currentAccessCode = code;
+            const seller = allSellers.find(s => s["access-code"] === code.toUpperCase());
+            const resultDiv = document.getElementById('seller-edit-result');
+            const submitBtn = document.getElementById('submit-button');
+            if (seller) {
+                id = seller.id;
+                resultDiv.innerHTML = `
+                    <div class="seller-edit-profile">
+                        <div class="seller-edit-field">
+                            <label class="seller-edit-label">Name:</label>
+                            <input class="seller-edit-input" type="text" id="seller-edit-name" value="${seller.name}">
+                        </div>
+                        <div class="seller-edit-field">
+                            <label class="seller-edit-label">Discord:</label>
+                            <input class="seller-edit-input" type="text" id="seller-edit-discord" value="${seller.discord}">
+                        </div>
+                        <div class="seller-edit-field">
+                            <label class="seller-edit-label">Rank:</label>
+                            <select class="seller-edit-select" id="seller-edit-rank">
+                                <option value="player" ${seller.rank === 'player' ? 'selected' : ''}></option>
+                                <option value="gold" ${seller.rank === 'gold' ? 'selected' : ''}>Gold</option>
+                                <option value="diamond" ${seller.rank === 'diamond' ? 'selected' : ''}>Diamond</option>
+                                <option value="emerald" ${seller.rank === 'emerald' ? 'selected' : ''}>Emerald</option>
+                                <option value="trainee" ${seller.rank === 'trainee' ? 'selected' : ''}>Trainee</option>
+                                <option value="helper" ${seller.rank === 'helper' ? 'selected' : ''}>Helper</option>
+                                <option value="mod" ${seller.rank === 'mod' ? 'selected' : ''}>Mod</option>
+                                <option value="srmod" ${seller.rank === 'srmod' ? 'selected' : ''}>Senior Mod</option>
+                                <option value="admin" ${seller.rank === 'admin' ? 'selected' : ''}>Admin</option>
+                            </select>
+                        </div>
+                        <div class="seller-edit-field">
+                            <label class="seller-edit-label">Status:</label>
+                            <select class="seller-edit-select" id="seller-edit-status">
+                                <option value="Selling" ${seller.status === 'Selling' ? 'selected' : ''}>Selling</option>
+                                <option value="Inactive" ${seller.status === 'Inactive' ? 'selected' : ''}>Inactive</option>
+                                <option value="Paused" ${seller.status === 'Paused' ? 'selected' : ''}>Paused</option>
+                            </select>
+                        </div>
+                        <div class="seller-edit-field">
+                            <label class="seller-edit-label">Timezone:</label>
+                            <input class="seller-edit-input" type="text" id="seller-edit-timezone" value="${seller.timezone}">
+                        </div>
+                        <div class="seller-edit-field">
+                            <label class="seller-edit-label">Gems price (put N/A if you aren't selling):</label>
+                            <input class="seller-edit-input" type="text" id="seller-edit-gems" value="${seller.gems}">
+                        </div>
+                        <div class="seller-edit-field">
+                            <label class="seller-edit-label">Gems Status:</label>
+                            <select class="seller-edit-select" id="seller-edit-gemStatus">
+                                <option value="Yes" ${seller.gemStatus === 'Yes' ? 'selected' : ''}>Yes</option>
+                                <option value="No" ${seller.gemStatus === 'No' ? 'selected' : ''}>No</option>
+                            </select>
+                        </div>
+                        <div class="seller-edit-field">
+                            <label class="seller-edit-label">Stock:</label>
+                            <input class="seller-edit-input" type="text" id="seller-edit-stock" value="${seller.stock}">
+                        </div>
+                        <div class="seller-edit-field">
+                            <label class="seller-edit-label">Sales:</label>
+                            <input class="seller-edit-input" type="text" id="seller-edit-sales" value="${seller.sales}">
+                        </div>
+                        <div class="seller-edit-field">
+                            <label class="seller-edit-label">Gold:</label>
+                            <input class="seller-edit-input" type="text" id="seller-edit-gold" value="${seller.gold}">
+                        </div>
+                        <div class="seller-edit-field">
+                            <label class="seller-edit-label">Diamond:</label>
+                            <input class="seller-edit-input" type="text" id="seller-edit-dia" value="${seller.dia}">
+                        </div>
+                        <div class="seller-edit-field">
+                            <label class="seller-edit-label">Emerald:</label>
+                            <input class="seller-edit-input" type="text" id="seller-edit-em" value="${seller.em}">
+                        </div>
+                        <button class="seller-edit-button" onclick="saveChanges()" id="seller-edit-saveButton">Save Changes</button>
+                    </div>
+                `;
+                submitBtn.style.display = 'none';
+            } else {
+                resultDiv.innerHTML = `<p class="seller-edit-error">Access code not found. Please try again.</p>`;
+            }
+        }
+
+        async function saveChanges() {
+            const saveButton = document.getElementById('seller-edit-saveButton');
+            const successText = document.getElementById('successText');
+            const successBox = document.querySelector('.successBox');
+            successText.textContent = '';
+            saveButton.disabled = true;
+            saveButton.classList.add('button-loading');
+            saveButton.textContent = 'Saving...';
+
+            try {
+                const fileResponse = await fetch('/seller-api', { 
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/vnd.github.v3+json',
+                    },
+                });
+
+                if (!fileResponse.ok) {
+                    const errorData = await fileResponse.text();
+                    console.error('File fetch error (from proxy):', errorData);
+                    throw new Error(`API error: ${fileResponse.status} ${fileResponse.statusText}`);
+                }
+
+                const fileData = await fileResponse.json();
+                const index = allSellers.findIndex(s => s["access-code"] === currentAccessCode);
+                if (index === -1) {
+                    throw new Error('Seller not found in array');
+                }
+
+                const updatedSeller = {
+                    id: id,
+                    name: document.getElementById('seller-edit-name').value,
+                    discord: document.getElementById('seller-edit-discord').value,
+                    rank: document.getElementById('seller-edit-rank').value,
+                    status: document.getElementById('seller-edit-status').value,
+                    timezone: document.getElementById('seller-edit-timezone').value,
+                    gems: document.getElementById('seller-edit-gems').value.toUpperCase(),
+                    gemStatus: document.getElementById('seller-edit-gemStatus').value,
+                    stock: document.getElementById('seller-edit-stock').value,
+                    sales: document.getElementById('seller-edit-sales').value,
+                    gold: document.getElementById('seller-edit-gold').value.toUpperCase(),
+                    dia: document.getElementById('seller-edit-dia').value.toUpperCase(),
+                    em: document.getElementById('seller-edit-em').value.toUpperCase(),
+                    "access-code": currentAccessCode.toUpperCase()
+                };
+
+                allSellers[index] = updatedSeller;
+                
+                const jsonString = JSON.stringify(allSellers, null, 2);
+                const encoder = new TextEncoder();
+                const data = encoder.encode(jsonString);
+                const content = btoa(String.fromCharCode(...data));
+                //call pages func
+                const response = await fetch('/seller-api', { 
+                    method: 'PUT',
+                    headers: {
+                        'Accept': 'application/vnd.github.v3+json',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        message: `Marigold via Token: Update seller data for ${updatedSeller.name}`,
+                        content: content,
+                        sha: fileData.sha
+                    })
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.text();
+                    console.error('Update error (from proxy):', errorData);
+                    throw new Error(`Update failed: ${response.status} ${response.statusText}`);
+                }
+
+                successText.textContent = 'Changes saved successfully!';
+                successText.classList.remove('error');
+                successText.classList.add('success');
+                successBox.classList.remove('error');
+            } catch (error) {
+                console.error('Detailed error:', error);
+                successText.textContent = `Error: ${error.message}. Check console for details.`;
+                successBox.classList.add('error');
+                successText.classList.add('error');
+                successBox.style.display = 'block';
+                setTimeout(() => {
+                    successBox.style.display = 'none';
+                }, 3000);
+            } finally {
+                saveButton.disabled = false;
+                saveButton.classList.remove('button-loading');
+                saveButton.textContent = 'Save Changes';
+                successBox.classList.remove('error'); 
+                successText.textContent = 'Changes saved. Please wait 20-50 seconds for the changes to take effect.';
+                successText.classList.add('success');
+                successBox.style.display = 'block';
+                setTimeout(() => {
+                    successBox.style.display = 'none';
+                }, 3000);
+            }
+        }
+    </script>
+</body>
+</html>

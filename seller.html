@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Rank Seller</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <script src="js/script.js"></script>
+    <link rel="stylesheet" href="css/essential.css">
+    <link rel="stylesheet" href="css/seller-profile.css">
+</head>
+
+<body class="rs-s-body">
+  <div id="loader">
+    <div></div>
+    <div></div>
+    <div></div>
+  </div>
+  <div class="top"></div>
+
+  <div class="sidebar" id="sidebar"></div>
+
+  <div id="sidebar-overlay" onclick="toggleSidebar()"></div>
+  <div class="gap"></div>
+
+  <!-- Move background switcher dropdown here, before profile-banner -->
+
+
+  <div class="rs-s-profile-banner" style="background-image: url('../Backgrounds/IMG_0179.webp');" id="banner">
+    <div class="rs-s-banner-content">
+      <div class="rs-s-banner-info"><select class="rs-s-select" id="backgroundSelect"
+          style="margin: 1rem; z-index:10; position:relative;">
+          <optgroup label="Image">
+            <option value="default">Default</option>
+            <option value="forest">Village Houses</option>
+            <option value="mountain">Harvest Haven</option>
+            <option value="desert">Ruins</option>
+            <option value="ocean">Wilderness</option>
+          </optgroup>
+          <optgroup label="Real Life">
+            <option value="rose">Rose</option>
+            <option value="bush">Red leaves</option>
+            <option value="fireworks">Fireworks</option>
+            <option value="snowdrops">Snowdrops</option>
+            <option value="fountain">Fountain</option>
+            <option value="skylights">Light Show</option>
+          </optgroup>
+          <optgroup label="Gradients">
+            <option value="random">Random</option>
+            <option value="cyberpunk">CyberPunk</option>
+            <option value="sunset">Sunset</option>
+          </optgroup>
+        </select>
+        <h1 class="rs-s-banner-name rs-s-h1" id="name">No seller ID found</h1>
+      </div>
+    </div>
+  </div>
+  <div id="sellerDetails"></div>
+  <div class="rs-s-grid-container-container">
+    <div class="rs-s-grid-container">
+      <div class="rs-s-box" style="grid-area: box-1;">
+        <div class="rs-s-box-value" id="rank"></div>
+        <div class="rs-s-box-label">Rank</div>
+      </div>
+      <div class="rs-s-box" style="grid-area: box-2;" id="prices">
+        <div class="rs-s-price-box">
+          <div class="rs-s-box-value" style="color: gold;" id="gold"></div>
+          <div class="rs-s-box-label">Gold</div>
+        </div>
+        <div class="rs-s-price-box">
+          <div class="rs-s-box-value" style="color: darkturquoise;" id="dia"></div>
+          <div class="rs-s-box-label">Diamond</div>
+        </div>
+        <div class="rs-s-price-box">
+          <div class="rs-s-box-value" style="color: lime;" id="em"></div>
+          <div class="rs-s-box-label">Emerald</div>
+        </div>
+      </div>
+      <div class="rs-s-box" style="grid-area: box-3;">
+        <div class="rs-s-box-value" id="discord"></div>
+        <div class="rs-s-box-label">Discord</div>
+      </div>
+      <div class="rs-s-box" style="grid-area: box-4;">
+        <div class="rs-s-box-value" id="gem"></div>
+        <div class="rs-s-box-label">Gems</div>
+      </div>
+      <div class="rs-s-box" style="grid-area: box-5;">
+        <div class="rs-s-box-value" id="stock"></div>
+        <div class="rs-s-box-label">Stock</div>
+      </div>
+      <div class="rs-s-box Selling" style="grid-area: box-6;" id="statusBox">
+        <div class="rs-s-box-value" id="status"></div>
+        <div class="rs-s-box-label">Status</div>
+      </div>
+      <div class="rs-s-box" style="grid-area: box-7;">
+        <div class="rs-s-box-value" id="timezone"></div>
+        <div class="rs-s-box-label">Timezone</div>
+      </div>
+      <div class="rs-s-box" style="grid-area: box-8;">
+        <div class="rs-s-box-value" id="sales"></div>
+        <div class="rs-s-box-label">Sales</div>
+      </div>
+    </div>
+  </div>
+
+  <div id="footer"></div>
+  <script>
+    // Background changer with localStorage support
+    function changeBackground(type, save = true) {
+      const backgrounds = {
+        'default': 'url("Backgrounds/IMG_4504.webp")',
+        'forest': 'url("Backgrounds/IMG_4498.webp")',
+        'mountain': 'url("Backgrounds/IMG_4499.webp")',
+        'desert': 'url("Backgrounds/IMG_4500.webp")',
+        'ocean': 'url("Backgrounds/IMG_4502.webp")',
+        'rose': 'url("Backgrounds/IMG_0007.webp")',
+        'bush': 'url("Backgrounds/IMG_0004.webp")',
+        'fireworks': 'url("Backgrounds/IMG_0097.webp")',
+        'snowdrops': 'url("Backgrounds/IMG_0669.webp")',
+        'fountain': 'url("Backgrounds/IMG_0179.webp")',
+        'skylights': 'url("Backgrounds/IMG_0205.webp")',
+        'crocus': 'url("Backgrounds/Crocus.webp")',
+        'daisy': 'url("Backgrounds/Daisy.webp")',
+        'oldtree': 'url("Backgrounds/OldTree.webp")',
+        'cyberpunk': 'linear-gradient(135deg, #ff00ff, #00ffff)',
+        'sunset': 'linear-gradient(135deg, #ff5f3f, #e5df3f)',
+        'random': () => {
+          const randomColor1 = `hsl(${Math.random() * 360}, 70%, 50%)`;
+          const randomColor2 = `hsl(${Math.random() * 360}, 70%, 50%)`;
+          return `linear-gradient(135deg, ${randomColor1}, ${randomColor2})`;
+        }
+      };
+      const background = typeof backgrounds[type] === 'function'
+        ? backgrounds[type]()
+        : backgrounds[type];
+
+      // Apply to body instead of .background div
+      document.body.style.backgroundImage =
+        'linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.7)), ' + background;
+      document.body.style.backgroundSize = 'cover';
+      document.body.style.backgroundRepeat = 'no-repeat';
+      document.body.style.backgroundPosition = 'center center';
+
+      // Save preference if needed
+      if (save) {
+        localStorage.setItem('selectedBackground', type);
+      }
+    }
+
+    // dropdown code with localStorage load
+    document.addEventListener('DOMContentLoaded', () => {
+      const backgroundSelect = document.getElementById('backgroundSelect');
+      const savedBg = localStorage.getItem('selectedBackground') || 'default';
+      if (backgroundSelect) {
+        backgroundSelect.value = savedBg;
+        backgroundSelect.addEventListener('change', (e) => {
+          changeBackground(e.target.value, true);
+        });
+      }
+      changeBackground(savedBg, false);
+    });
+    async function loadSellerDetails() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const sellerId = urlParams.get('id');
+
+      if (sellerId) {
+        try {
+          const [sellerRes] = await Promise.all([
+            fetch('ranksellers/ranksellers.txt')
+          ]);
+
+          const sellerData = await sellerRes.text();
+
+          const sellers = JSON.parse(sellerData);
+          const seller = sellers.find(seller => seller.id === sellerId);
+
+
+
+          if (seller) {
+            let debug = false;
+            const sellerDetailsDiv = document.getElementById('sellerDetails');
+            const rankBox = document.getElementById('rank');
+            const discordBox = document.getElementById('discord');
+            const gemBox = document.getElementById('gem');
+            const stockBox = document.getElementById('stock');
+            const statusBox = document.getElementById('statusBox');
+            const status = document.getElementById('status');
+            const timezoneBox = document.getElementById('timezone');
+            const salesBox = document.getElementById('sales');
+            const goldBox = document.getElementById('gold');
+            const diaBox = document.getElementById('dia');
+            const emBox = document.getElementById('em');
+            const name = document.getElementById('name');
+            let inactive = false;
+            if (seller.status !== "Selling") {
+              inactive = true;
+            }
+            let sellingGems = false;
+            if (seller.gemStatus === "Yes") {
+              sellingGems = true;
+            }
+            sellerDetailsDiv.innerHTML = `
+              <h1 class="rs-s-h1">${seller.name}</h1>
+              ${seller.rank ? `<img src="rank/${seller.rank}.png" alt="${seller.rank}"` : ''}
+              ${seller.status ? `<div class="${seller.status}">${seller.status}</div>` : ''}
+              <p><strong>ID:</strong> ${seller.id}</p>
+              ${seller.timezone ? `<p><strong>Description:</strong> ${seller.timezone}</p>` : ''}
+              <p><strong>discord:</strong> ${seller.discord}</p>
+              <p><strong>Gems:</strong> ${sellingGems ? seller.gems + " per gem" : "Not Selling"}</p>
+              <p><strong>Stock:</strong> ${seller.stock}</p>
+              <p><strong>Sales:</strong> ${seller.sales}</p>
+              <p><strong>banner:</strong> ${seller.banner}</p>
+              <p><strong>Prices:</strong></p>
+              <ul>
+                <li><strong>Gold:</strong> ${seller.gold}</li>
+                <li><strong>Diamond:</strong> ${seller.dia}</li>
+                <li><strong>Emerald:</strong> ${seller.em}</li></ul>
+            `;
+            status.innerHTML = seller.status || 'N/A';
+            statusBox.classList.add(seller.status ? seller.status.toLowerCase() : 'inactive');
+            rankBox.innerHTML = `<div class="rs-s-box-value"><img src="rank/${seller.rank}.png" alt="${seller.rank}"></div>`;
+            discordBox.textContent = seller.discord || 'N/A';
+            gemBox.textContent = sellingGems ? seller.gems + " per gem" : "Not Selling";
+            stockBox.textContent = seller.stock || 'N/A';
+            timezoneBox.textContent = seller.timezone || 'N/A';
+            salesBox.textContent = seller.sales || 'N/A';
+            goldBox.textContent = seller.gold || 'N/A';
+            diaBox.textContent = seller.dia || 'N/A';
+            emBox.textContent = seller.em || 'N/A';
+            name.textContent = `${seller.name}'s Seller Profile`;
+            document.getElementById('banner').style.backgroundImage = `url('../Backgrounds/${seller.banner || 'IMG_0179.webp'}')`;
+            if (debug) {
+              sellerDetailsDiv.style.display = 'block';
+            } else {
+              sellerDetailsDiv.style.display = 'none';
+            }
+          } else {
+            document.getElementById('sellerDetails').innerHTML = '<p>Item not found.</p> <a href="index.html">Back to Home</a>';
+          }
+        } catch (error) {
+          console.error('Error loading seller details:', error);
+          document.getElementById('sellerDetails').innerHTML = '<p>Failed to load seller details.</p> <a href="index.html">Back to Home</a>';
+        }
+      } else {
+        document.getElementById('sellerDetails').innerHTML = '<p>No seller ID specified.</p> <a href="index.html">Back to Home</a>';
+      }
+    }
+    loadSellerDetails();
+  </script>
+
+</html>

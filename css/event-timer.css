@@ -1,0 +1,106 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    background-image: url('../Backgrounds/IMG_4500Blurred.webp');
+    background-size: cover;
+    background-position: center;
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: -1;
+    background: rgba(0, 0, 0, 0.7);
+}
+h1 {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-top: 60px;
+}
+.container {
+    max-width: 600px;
+    margin: 5rem auto;
+    text-align: center;
+    padding: 20px;
+    border-radius: 16px;
+}
+.progress {
+    height: 20px;
+}
+.timer {
+    font-size: 2rem;
+    font-weight: bold;
+}
+.divider {
+    margin: 30px 0;
+    border-top: 1px solid #ddd;
+}
+.row {
+    margin-top: 20px;
+}
+.interest-list {
+    margin-top: 20px;
+    text-align: left;
+    max-height: 300px;
+    overflow-y: auto;
+}
+.interest-item {
+    padding: 5px 0;
+    border-bottom: 1px solid #ddd;
+}
+#nextInterestBtn {
+    margin-top: 20px;
+    font-style: italic;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 15px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+    width: 100%;
+    font-size: 1.1rem;
+}
+#nextInterestBtn:hover {
+    background-color: #0056b3;
+}
+.collapsible {
+    padding: 15px 20px;
+    margin-top: 10px;
+    border: 1px solid #ddd;
+    cursor: pointer;
+    font-weight: bold;
+    color: #007bff;
+    border-radius: 5px;
+    font-size: 1.1rem;
+}
+.content {
+    padding: 0 18px;
+    display: none;
+    overflow: hidden;
+}
+.interest-container {
+    margin-bottom: 20px;
+}
+.interest-list-container {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 10px;
+    margin-top: 10px;
+}
+.event-item {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    background: none;
+}
+
+.card-h3 {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+    font-weight: bold;
+    color: #007bff;
+}

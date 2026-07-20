@@ -1,0 +1,448 @@
+const UIController = {
+    currentPage: 1,
+    todaySkyblock: 0,
+    engine: null,
+    elements: {},
+    modalCount: null,
+    currentUpcomingEvents: [], 
+
+    init(engine) {
+        this.engine = engine;
+        this.elementLoad();
+        this.setupListeners();
+        const time = this.engine.getCurrentTimeData();
+        this.todaySkyblock = time.todaySkyblock;
+        this.currentPage = Math.max(1, Math.ceil(this.todaySkyblock / this.engine.DAYS_PER_PAGE));
+        if (this.elements.yearInput) this.elements.yearInput.value = time.currentYear;
+        this.engine.preCalcPage(this.currentPage);
+        this.engine.preCalcPage(this.currentPage + 1);
+        this.loadPageToday();
+        this.initTimers();
+    },
+
+    elementLoad() {
+        this.elements = {
+            calGrid: document.getElementById('grid'),
+            yearNum: document.getElementById('year'),
+            yearInput: document.getElementById('year-input'),
+            yearGo: document.getElementById('year-go'),
+            nextPage: document.getElementById('next-page'),
+            prevPage: document.getElementById('prev-page'),
+            pageCounter: document.getElementById('page-counter'),
+            dateHeader: document.getElementById('date-top'),
+            eventList: document.getElementById('events-list'),
+            modal: document.getElementById('day-modal'),
+            modalClose: document.getElementById('modal-close-btn')
+        };
+    },
+
+    setupListeners() {
+        this.elements.nextPage.addEventListener('click', () => this.nextPage());
+        this.elements.prevPage.addEventListener('click', () => this.prevPage());
+        if (this.elements.yearGo) this.elements.yearGo.addEventListener('click', () => this.goToYearFromInput());
+        if (this.elements.yearInput) this.elements.yearInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') this.goToYearFromInput(); });
+        this.elements.modal.addEventListener('click', (e) => { if (e.target === this.elements.modal) this.closeModal(); });
+        this.elements.modalClose.addEventListener('click', () => this.closeModal());
+
+        this.elements.eventList.addEventListener('click', (e) => {
+            const item = e.target.closest('.event-timer-item');
+            if (!item) return;
+            const idx = Number(item.dataset.eventIndex);
+            const ev = this.currentUpcomingEvents && this.currentUpcomingEvents[idx];
+
+            const next = item.nextElementSibling;
+            if (next && next.classList.contains('event-occurrences-wrapper')) {
+                next.remove();
+                return;
+            }
+            if (ev) this.eventOccurLoad(ev, item);
+        });
+    },
+
+    nextPage() {
+        this.currentPage++;
+        this.loadPageToday();
+        this.engine.preCalcPage(this.currentPage + 1);
+    },
+    
+    prevPage() {
+        if (this.currentPage > 1) {
+            this.currentPage--;
+            this.loadPageToday();
+        }
+    },
+
+    initTimers() {
+        let upcomingEvents = this.engine.getUpcomingEventsData().map(event => {
+            event.targetTime = Date.now() + event.msUntil;
+            return event;
+        });
+        this.currentUpcomingEvents = upcomingEvents;
+        this.upcomingEvents(upcomingEvents);
+
+        setInterval(() => {
+            upcomingEvents.forEach((event, idx) => {
+                const countdownEl = document.querySelectorAll('.event-timer-countdown')[idx];
+                if (countdownEl) {
+                    const msLeft = event.targetTime - Date.now();
+                    countdownEl.textContent = this.timeCorrect(msLeft);
+                }
+            });
+        }, 1000);
+
+        setInterval(() => {
+            const timeData = this.engine.getCurrentTimeData();
+            const newSkyblockDay = timeData.todaySkyblock;
+            const dayChanged = this.todaySkyblock !== newSkyblockDay;
+            this.todaySkyblock = newSkyblockDay;
+            this.elements.dateHeader.textContent = `Today: Year ${timeData.currentYear}, ${this.engine.SEASON_NAMES[timeData.currentSeason]}, Day ${timeData.todaySeason}`;
+            if (dayChanged) {
+                const newPage = Math.max(1, Math.ceil(this.todaySkyblock / this.engine.DAYS_PER_PAGE));
+                if (newPage !== this.currentPage) {
+                    this.currentPage = newPage;
+                    this.engine.preCalcPage(this.currentPage + 1);
+                }
+                this.loadPageToday();
+                upcomingEvents = this.engine.getUpcomingEventsData().map(event => {
+                    event.targetTime = Date.now() + event.msUntil;
+                    return event;
+                });
+                this.currentUpcomingEvents = upcomingEvents;
+                this.upcomingEvents(upcomingEvents);
+            }
+        }, 1000);
+    },
+    
+    timeCorrect(ms) {
+        if (ms < 0) return "0d 0h 0m 0s";
+        let s = Math.floor(ms / 1000), m = Math.floor(s / 60);
+        let h = Math.floor(m / 60), d = Math.floor(h / 24);
+        return `${d}d ${h % 24}h ${m % 60}m ${s % 60}s`;
+    },
+    
+    upcomingEvents(events) {
+        this.currentUpcomingEvents = events;
+        this.elements.eventList.innerHTML = events.map((event, idx) => {
+            let info = 'Starts in...';
+            if (event.type === 'farming' && event.crops) {
+                info = event.crops.map(c => this.engine.CROP_ICONS[c] || '?').join(' ');
+            } else if (event.name === 'Travelling Zoo' && event.legendaryName) {
+                // Prefer full shop data if present, otherwise fallback to legendary name
+                if (event.pets && event.pets.length) {
+                    // render a bullet list, slightly indented, using rarity icons
+                    const items = event.pets.map(p => `<li>${p.icon} ${capitalize(p.name)} ${this.engine.RARITIES_ICONS[p.rarity] || ''}</li>`).join('');
+                    info = ` <div style="margin-top:4px;"><ul class="zoo-pet-list">${items}</ul></div>`;
+                } else {
+                    info = `Legendary pet: ${capitalize(event.legendaryName)}`;
+                }
+            }
+            return `
+                <div class="event-timer-item" data-event-index="${idx}">
+                    <div class="event-timer-info">
+                        <span class="event-icon">${event.icon}</span>
+                        <div>
+                            <p class="event-name">${event.name}</p>
+                            <p class="event-info">${info}</p>
+                            <p class="expand-text">Click to see next 10 timings</p>
+                        </div>
+                    </div>
+                    <div class="event-timer-countdown">${this.timeCorrect(event.msUntil)}</div>
+                </div>
+                `;
+        }).join('');
+    },
+
+        loadPage(page) {
+            this.elements.calGrid.innerHTML = '';
+            if (!page) return;
+
+            // keep year input synced with what's shown on the page
+            if (this.elements.yearInput) this.elements.yearInput.value = page[0].year;
+            this.elements.yearNum.textContent = page[0].year;
+            this.elements.prevPage.disabled = this.currentPage <= 1;
+            if (this.elements.pageCounter) this.elements.pageCounter.textContent = this.currentPage;
+
+            page.forEach(day => {
+                const dayCell = document.createElement('div');
+                dayCell.className = 'day-cell';
+                if (day.totalDays === this.todaySkyblock) {
+                    dayCell.classList.add('today');
+                    dayCell.id = 'today';
+                }
+
+                
+                let eventContent = '';
+                if (day.events.length > 0) {
+                    const icons = day.events.slice(0, 2).map(e => e.icon).join('');
+                    eventContent = `<div class="event-icons">${icons}</div>`;
+                } else {
+                    eventContent = `<div class="no-events" style="font-size: 8px; opacity:0.5;">None</div>`;
+                }
+
+                dayCell.innerHTML = `
+                    <div class="day-header">
+                        <span class="day-season">${day.season.substring(0,3)} ${day.dayOfSeason}</span>
+                        <span class="day-year">Y${day.year}</span>
+                    </div>
+                    <div class="day-body">${eventContent}</div>`;
+                dayCell.addEventListener('click', () => this.modalThing(day));
+                this.elements.calGrid.appendChild(dayCell);
+            });
+        },
+
+        loadPageToday() {
+            const page = this.engine.getPageData(this.currentPage);
+            if (page && page.length > 0) {
+                if (this.elements.yearInput) this.elements.yearInput.value = page[0].year;
+                this.elements.yearNum.textContent = page[0].year;
+                this.elements.prevPage.disabled = this.currentPage <= 1;
+            }
+            this.loadPage(page);
+        },
+
+        modalThing(day) {
+        const realDate = this.engine.getRealTimeForDay(day.totalDays);
+        document.getElementById('modal-title').textContent = `Year ${day.year}, ${day.season} ${day.dayOfSeason}`;
+        document.getElementById('modal-subtitle').textContent = `Date: ${realDate.toLocaleString()}`;
+        const countdownEl = document.getElementById('modal-timer');
+        if (this.modalCount) clearInterval(this.modalCount);
+
+        const updateCountdown = () => {
+            const now = Date.now();
+            const ms = realDate.getTime() - now;
+            if (ms > 0) {
+                countdownEl.style.display = '';
+                countdownEl.textContent = `Countdown: ${this.timeCorrect(ms)}`;
+            } else {
+                countdownEl.style.display = 'none';
+            }
+        };
+        updateCountdown();
+        this.modalCount = setInterval(updateCountdown, 1000);
+
+        const eventListEl = document.getElementById('modal-event-list');
+        const eventsTitleEl = document.getElementById('modal-events-title');
+        eventListEl.innerHTML = '';
+        
+        if (day.events.length > 0) {
+            eventsTitleEl.style.display = 'block';
+            day.events.forEach(event => {
+                const li = document.createElement('li');
+                li.className = 'modal-event-item';
+                let info = '';
+                if (event.type === 'farming') {
+                    info = ` <span style="color: var(--text-secondary); font-size: 0.9rem;">(${event.crops.join(', ')})</span>`;
+                } else if (event.name === 'Travelling Zoo' && event.legendaryName) {
+                    if (event.pets && event.pets.length) {
+                        const items = event.pets.map(p => `<li>${p.icon} ${capitalize(p.name)} ${this.engine.RARITIES_ICONS[p.rarity] || ''}</li>`).join('');
+                        info = ` <div style="color: var(--text-secondary); font-size: 0.9rem; margin-top:4px;"><ul class="zoo-pet-list">${items}</ul></div>`;
+                    } else {
+                        info = ` <span style="color: var(--text-secondary); font-size: 0.9rem;">(Legendary: ${capitalize(event.legendaryName)})</span>`;
+                    }
+                }
+                li.innerHTML = `<span class="event-icon">${event.icon}</span> <span>${event.name}${info}</span>`;
+                eventListEl.appendChild(li);
+            });
+        } else {
+            eventsTitleEl.style.display = 'none';
+            eventListEl.innerHTML = '<li>No events on this day.</li>';
+        }
+        this.elements.modal.classList.add('visible');
+        },
+
+        eventOccurLoad(event, itemEl) {
+        document.querySelectorAll('.event-occurrences-wrapper').forEach(el => el.remove());
+        const occ = this.engine.getNextOccurrences(event.name, this.todaySkyblock, 200);
+        const hasExtra = occ.some(o => (o.crops && o.crops.length) || o.legendaryName);
+        const wrapper = document.createElement('div');
+        wrapper.className = 'event-occurrences-wrapper accordion';
+        const accItem = document.createElement('div');
+        accItem.className = 'accordion-item';
+        accItem.setAttribute('data-event-name', event.name);
+        const header = document.createElement('div');
+        header.className = 'accordion-header';
+        header.innerHTML = `
+            <div class="header-left">
+                <div>
+                    <h3>${event.name}</h3>
+                    <div style="font-size:0.85rem;color:var(--text-secondary)">${event.type === 'farming' && event.crops ? event.crops.map(c => this.engine.CROP_ICONS[c] || c).join(' ') : (event.legendaryName ? 'Legendary: ' + capitalize(event.legendaryName) : '')}</div>
+                </div>
+            </div>
+            <div style="font-size:0.85rem;color:var(--text-secondary)">Next 10 occurrences</div>
+        `;
+
+        const body = document.createElement('div');
+        body.className = 'accordion-body';
+
+        if (event.name === 'Farming Contest') {
+            const filterContainer = document.createElement('div');
+            filterContainer.className = 'farming-filters';
+            const filterLabel = document.createElement('div');
+            filterLabel.textContent = 'Filter by crop:';
+            this.engine.CropType.forEach(cropKey => {
+                const label = document.createElement('label');
+                label.className = 'farming-filter';
+                label.title = cropKey;
+                label.innerHTML = `<input type="checkbox" value="${cropKey}"><span class="crop-icon">${this.engine.CROP_ICONS[cropKey] || ''}</span><span class="crop-name">${cropKey.replace('_',' ')}</span>`;
+                filterContainer.appendChild(label);
+            });
+
+            body.appendChild(filterContainer);
+
+            const table = document.createElement('table');
+            table.className = 'occurrences-table';
+            body.appendChild(table);
+
+            const renderTable = (list) => {
+                table.innerHTML = `
+                    <thead>
+                        <tr>
+                            <th>In-game date</th>
+                            <th>Real date (local)</th>
+                            <th>Time until</th>
+                            <th>Extra</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${list.slice(0,10).map(o => {
+                            const day = this.engine.getDayInfo(o.totalDays);
+                            const shortSeason = day.season.substring(0,3);
+                            const realStr = o.realDate.toLocaleString();
+                            const until = this.timeCorrect(o.msUntil);
+                            const cropsText = (o.crops || []).map(c => `${this.engine.CROP_ICONS[c] || ''}`);
+                            return `<tr>
+                                <td>Year ${day.year}, ${shortSeason} ${day.dayOfSeason}</td>
+                                <td>${realStr}</td>
+                                <td style="font-family:monospace;color:var(--highlight-color)">${until}</td>
+                                <td>${cropsText}</td>
+                            </tr>`;
+                        }).join('')}
+                    </tbody>
+                `;
+            };
+            //if you are reading this noticable notice you may notice that this noticable notice is not worth noticing and has no noticable value
+            const farmingOcc = occ.filter(o => o.crops && o.crops.length).slice(0, 1000);
+            renderTable(farmingOcc);
+
+            filterContainer.addEventListener('change', () => {
+                const checked = Array.from(filterContainer.querySelectorAll('input:checked')).map(i => i.value);
+                if (checked.length === 0) {
+                    renderTable(farmingOcc);
+                    return;
+                }
+                const matches = [];
+                for (let i = 0; i < farmingOcc.length && matches.length < 10; i++) {
+                    const o = farmingOcc[i];
+                    if (o.crops && checked.some(c => o.crops.includes(c))) matches.push(o);
+                }
+                renderTable(matches);
+            });
+        } else {
+            const table = document.createElement('table');
+            table.className = 'occurrences-table';
+
+            const filtered = occ.slice(0, 10);
+            const hasExtraNonFarm = filtered.some(o => o.legendaryName) || event.name === 'New Year Celebration';
+            const theadCols = [
+                '<th>In-game date</th>',
+                '<th>Real date (local)</th>',
+                '<th>Time until</th>'
+            ];
+            if (hasExtraNonFarm) theadCols.push('<th>Extra</th>');
+
+            table.innerHTML = `
+                <thead>
+                    <tr>${theadCols.join('')}</tr>
+                </thead>
+                <tbody>
+                    ${filtered.map(o => {
+                        const day = this.engine.getDayInfo(o.totalDays);
+                        const shortSeason = day.season.substring(0,3);
+                        const realStr = o.realDate.toLocaleString();
+                        const until = this.timeCorrect(o.msUntil);
+                        let extra = '';
+                        // If occurrence supplies full pet shop, display that
+                        if (o.pets && o.pets.length) {
+                            // map rarity to icons and show as a bullet list to avoid overflow
+                            const items = o.pets.map(p => `<li>${p.icon} ${capitalize(p.name)} ${this.engine.RARITIES_ICONS[p.rarity] || ''}</li>`).join('');
+                            extra = `<ul class="zoo-pet-list">${items}</ul>`;
+                        } else if (o.legendaryName) {
+                            console.log(o.legendaryName);
+                            const icon = o.legendaryIcon || (this.engine.LEGENDARY_ICONS && this.engine.LEGENDARY_ICONS[o.legendaryName]) || '';
+                            extra = `<span class="occ-extra">${icon} ${capitalize(o.legendaryName)}</span>`;
+                        } else if (event.name === 'New Year Celebration') {
+                            extra = `Y${day.year}`;
+                        }
+                        const baseCells = [
+                            `<td>Year ${day.year}, ${shortSeason} ${day.dayOfSeason}</td>`,
+                            `<td>${realStr}</td>`,
+                            `<td style="font-family:monospace;color:var(--highlight-color)">${until}</td>`
+                        ];
+                        if (hasExtraNonFarm) baseCells.push(`<td>${extra}</td>`);
+                        return `<tr>${baseCells.join('')}</tr>`;
+                    }).join('')}
+                </tbody>
+            `;
+            body.appendChild(table);
+        }
+        accItem.appendChild(header);
+        accItem.appendChild(body);
+        wrapper.appendChild(accItem);
+        itemEl.parentNode.insertBefore(wrapper, itemEl.nextSibling);
+        requestAnimationFrame(() => body.classList.add('expanded'));
+    },
+
+        closeModal() {
+            this.elements.modal.classList.remove('visible');
+            if (this.modalCount) {
+                clearInterval(this.modalCount);
+                this.modalCount = null;
+            }
+        },
+        //THIS WAS A PAINNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
+        toToday() {
+            try {
+                if (!this.engine) {
+                    const today = document.getElementById('today') || document.querySelector('.today');
+                    if (today) today.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    console.warn('missing engine');
+                    return;
+                }
+                const time = this.engine.getCurrentTimeData();
+                const pageDaysNum = this.engine.DAYS_PER_PAGE || 31;
+                const todayPage = Math.max(1, Math.ceil(time.todaySkyblock / pageDaysNum));
+                this.currentPage = todayPage;
+                if (typeof this.engine.preCalcPage === 'function') this.engine.preCalcPage(todayPage + 1);
+                this.loadPageToday();
+                setTimeout(() => {
+                    const today = document.getElementById('today') || document.querySelector('.today');
+                    if (today) today.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }, 50);
+            } catch (e) {
+                console.error('toToday error:', e);
+            }
+        },
+        goToYearFromInput() {
+            const raw = this.elements && this.elements.yearInput ? this.elements.yearInput.value : null;
+            const year = Number(raw);
+            if (!Number.isInteger(year) || year < 1) return;
+            const firstDay = ((year - 1) * this.engine.DAYS_PER_YEAR) + 1;
+            const page = Math.max(1, Math.ceil(firstDay / this.engine.DAYS_PER_PAGE));
+            this.currentPage = page;
+            if (typeof this.engine.preCalcPage === 'function') this.engine.preCalcPage(this.currentPage + 1);
+            this.loadPageToday();
+        },
+    };
+
+document.addEventListener('DOMContentLoaded', () => {
+    UIController.init(CalendarEngine);
+});
+
+function capitalize(e) {
+    const s = String(e || '');
+    return s.length === 0 ? '' : s.charAt(0).toUpperCase() + s.slice(1);
+}
+
+function toToday() {
+    UIController.toToday();
+}

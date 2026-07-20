@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="icon" href="assets/cmc-icon.png" type="image/png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta property="og:title" content="CraftersMC Leaderboards">
+    <meta property="og:description"
+        content="Explore all types of leaderboards here! Whether you want to find out positions or collections, all data is available here!">
+    <meta property="og:image" content="https://cdn.discordapp.com/attachments/1416722412032229457/1423270231740256256/Screenshot_20250524-2112033.png?ex=68dfb332&is=68de61b2&hm=809b90de9e5b77d767b558b836bb6b6f1cf3bf58f6e45a168400aa8654409a4c&">
+    <meta property="og:url" content="https://craftersmc-guides.pages.dev/leaderboards">
+    <meta property="og:type" content="website">
+    <meta name="theme-color" content="#007bff">
+    <meta name="twitter:card" content="summary_large_image"/>
+    <title>CraftersMC Leaderboards</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script src="js/script.js" defer></script>
+    <link rel="stylesheet" href="css/essential.css">
+    <link rel="stylesheet" href="css/event.css">
+</head>
+
+<body>
+    <div id="loader">
+        <div></div>
+        <div></div>
+        <div></div>
+    </div>
+    
+    <!-- This is the main selection view, shown on first visit -->
+    <div id="main-selection-view">
+        <div class="leaderboard-interface-background"></div>
+        <div class="top"></div>
+        <div class="sidebar" id="sidebar"></div>
+        <div id="sidebar-overlay" onclick="toggleSidebar()"></div>
+        <span class="material-icons" id="scrollToTopBtn">north</span>
+        <div class="gap"></div>
+        <div class="event-log-card-container">
+            <div class="event-log-card">
+                <img src="Backgrounds/trophies-minecraft.png" alt="Achievements Leaderboard"
+                    onerror="this.onerror=null;this.src='https://placehold.co/600x400/222/fff?text=Collections';">
+                <div class="event-log-card-content">
+                    <h3>Achievements Leaderboard</h3>
+                    <p>See who has the most achievements in CraftersMC Minecraft server!</p>
+                    <button onclick="window.location.href = '/achievements-leaderboard.html';">View</button>
+                </div>
+            </div>
+            <div class="event-log-card">
+                <img src="Backgrounds/AvgSkillBG.jpg" alt="Average Skill Leaderboard"
+                    onerror="this.onerror=null;this.src='https://placehold.co/600x400/222/fff?text=Collections';">
+                <div class="event-log-card-content">
+                    <h3>Average Skill Leaderboard</h3>
+                    <p>Discover the top players with the highest average skill level across all skills in the CraftersMC Skyblock server!</p>
+                    <button onclick="window.location.href = '/avg-skill-leaderboard.html';">View</button>
+                </div>
+            </div>
+            <div class="event-log-card">
+                <img src="Backgrounds/IMG_4504.webp" alt="Collections Leaderboards"
+                    onerror="this.onerror=null;this.src='https://placehold.co/600x400/222/fff?text=Collections';">
+                <div class="event-log-card-content">
+                    <h3>Collections Leaderboards</h3>
+                    <p>Find out who is at what ranking and how much collection they have!</p>
+                    <button onclick="window.location.href = '/collections-leaderboards.html';">View</button>
+                </div>
+            </div>
+            <div class="event-log-card">
+                <img src="Backgrounds/craftersmc-sb.jpeg" alt="Crafters Level Leaderboard"
+                    onerror="this.onerror=null;this.src='https://placehold.co/600x400/222/fff?text=Collections';">
+                <div class="event-log-card-content">
+                    <h3>Crafters Level Leaderboard</h3>
+                    <p>Check out the top players with the highest levels on the entire CraftersMC Minecraft server!</p>
+                    <button onclick="window.location.href = '/crafters-level-leaderboard.html';">View</button>
+                </div>
+            </div>
+            <div class="event-log-card">
+                <img src="Backgrounds/img55hfw.webp" alt="Gems Leaderboard"
+                    onerror="this.onerror=null;this.src='https://placehold.co/600x400/222/fff?text=Collections';">
+                <div class="event-log-card-content">
+                    <h3>Gems Leaderboard</h3>
+                    <p>Check out the top players who had the most gems at a single time in the CraftersMC Skyblock server!</p>
+                    <button onclick="window.location.href = '/gems-leaderboard.html';">View</button>
+                </div>
+            </div>
+            <div class="event-log-card">
+                <img src="Backgrounds/lobby.webp" alt="Playtime Leaderboard"
+                    onerror="this.onerror=null;this.src='https://placehold.co/600x400/222/fff?text=Playtime';">
+                <div class="event-log-card-content">
+                    <h3>Playtime Leaderboard</h3>
+                    <p>Find out who has played the most on CraftersMC Network!</p>
+                    <button onclick="window.location.href = '/playtime.html';">View</button>
+                </div>
+            </div>
+            <div class="event-log-card">
+                <img src="Backgrounds/image9489.webp" alt="Slayers Leaderboards"
+                    onerror="this.onerror=null;this.src='https://placehold.co/600x400/222/fff?text=Slayers';">
+                <div class="event-log-card-content">
+                    <h3>Slayers Leaderboards</h3>
+                    <p>Find out who is at what position and how much experience they have!</p>
+                    <button onclick="window.location.href = '/slayers-leaderboards.html';">View</button>
+                </div>
+            </div>
+            <div class="event-log-card">
+                <img src="Backgrounds/image8297.webp" alt="Boss time Leaderboards"
+                    onerror="this.onerror=null;this.src='https://placehold.co/600x400/222/fff?text=Boss_TIme';">
+                <div class="event-log-card-content">
+                    <h3>Boss Time Leaderboards</h3>
+                    <p>See who leads in boss spawn and kill times on CraftersMC.</p>
+                    <button onclick="window.location.href = '/boss-time-leaderboards.html';">View</button>
+                </div>
+            </div>
+            <div class="event-log-card">
+                <img src="Backgrounds/4.webp" alt="Farming Contest Leaderboards"
+                    onerror="this.onerror=null;this.src='https://placehold.co/600x400/222/fff?text=Farming_Contest';">
+                <div class="event-log-card-content">
+                    <h3>Farming Contests Leaderboards</h3>
+                    <p>See who leads in farming contests, medals, and personal bests on CraftersMC.</p>
+                    <button onclick="window.location.href = '/farming-contests-leaderboards.html';">View</button>
+                </div>
+            </div>
+            <div class="event-log-card">
+                <img src="Backgrounds/imag38606-003424.webp" alt="cakes Leaderboard"
+                    onerror="this.onerror=null;this.src='https://placehold.co/600x400/222/fff?text=cakes';">
+                <div class="event-log-card-content">
+                    <h3>Cakes Leaderboard</h3>
+                    <p>Discover the top players with the highest cakes collected across the entire CraftersMC Skyblock!</p>
+                    <button onclick="window.location.href = '/cakes-leaderboard.html';">View</button>
+                </div>
+            </div>
+            <div class="event-log-card">
+                <img src="Backgrounds/2026_april_fools_melon_event.png" alt="2026 April Fools Melon Event Leaderboard"
+                    onerror="this.onerror=null;this.src='https://placehold.co/600x400/73b545/fff?text=Melon+Event';">
+                <div class="event-log-card-content">
+                    <h3>2026 April Fools Melon Event</h3>
+                    <p>View the leaderboard for the 2026 April Fools Melon Event on CraftersMC Skyblock.</p>
+                    <button onclick="window.location.href = '/april-fools-melon-event-leaderboard.html';">View</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="footer"></div>
+</body>
+
+</html>

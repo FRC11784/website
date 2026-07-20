@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="icon" href="assets/cmc-icon.png" type="image/png">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Feedback - CraftersMC Guides</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script src="js/script.js"></script>
+    <link rel="stylesheet" href="css/essential.css">
+    <link rel="stylesheet" href="css/form.css">
+</head>
+
+<body>
+    <div class="top"></div>
+    <div class="sidebar" id="sidebar"></div>
+    <div id="sidebar-overlay" onclick="toggleSidebar()"></div>
+    <div class="report-background"></div>
+
+    <div class="gap"></div>
+    <div class="success-message" id="successMessage">
+        <h1>Thank You!</h1>
+        <p>Your feedback has been submitted successfully.</p>
+    </div>
+    <div class="container" id="reportContainer">
+        <h3 class="h3">Send Us Your Feedback</h3>
+        <div class="panel" id="panel">✔ Feedback Submitted, Thank you!</div>
+        <form id="reportForm">
+            <div class="group">
+                <label class="label" for="username">Your In-Game Name:</label>
+                <input class="input" type="text" id="username" required>
+            </div>
+            <div class="group">
+                <label class="label" for="discord">Discord Username:</label>
+                <input class="input" type="text" id="discord">
+            </div>
+            <div class="group">
+                <label class="label" for="desc">Describe your issue or suggestion:</label>
+                <textarea class="textarea" id="desc" rows="5" required></textarea>
+            </div>
+            <div class="group">
+                <label class="label">Additional Contact Info (optional):</label>
+                <div id="contactFields"></div>
+                <button type="button" id="addContactBtn" class="btn">Add Contact</button>
+            </div>
+            <div class="group">
+                <label class="label">Comments (optional):</label>
+                <div id="commentFields"></div>
+                <button type="button" id="addCommentBtn" class="btn">Add Comment</button>
+            </div>
+            <div class="group">
+                <label class="label" for="file">Attach files (optional):</label>
+                <input class="btn" type="file" id="file" multiple>
+            </div>
+            <button type="submit" class="green-btn" id="submitBtn">Submit Feedback</button>
+        </form>
+    </div>
+
+    <div id="footer"></div>
+    <script>
+        document.getElementById('addContactBtn').onclick = () => {
+            const container = document.getElementById('contactFields');
+            const wrapper = document.createElement('div');
+            wrapper.style.display = "flex";
+            wrapper.style.alignItems = "center";
+            wrapper.style.gap = "6px";
+            const input = document.createElement('input');
+            input.type = "text";
+            input.name = "contact";
+            input.placeholder = "Additional contact info";
+            input.style.marginTop = "6px";
+            input.className = "input";
+            const removeBtn = document.createElement('button');
+            removeBtn.type = "button";
+            removeBtn.textContent = "Remove";
+            removeBtn.className = "btn";
+            removeBtn.style.marginLeft = "6px";
+            removeBtn.onclick = () => wrapper.remove();
+            wrapper.appendChild(input);
+            wrapper.appendChild(removeBtn);
+            container.appendChild(wrapper);
+        };
+
+        document.getElementById('addCommentBtn').onclick = () => {
+            const container = document.getElementById('commentFields');
+            const wrapper = document.createElement('div');
+            wrapper.style.display = "flex";
+            wrapper.style.alignItems = "center";
+            wrapper.style.gap = "6px";
+            const textarea = document.createElement('textarea');
+            textarea.name = "comments";
+            textarea.rows = 3;
+            textarea.placeholder = "Additional comment";
+            textarea.style.marginTop = "6px";
+            textarea.className = "textarea";
+            const removeBtn = document.createElement('button');
+            removeBtn.type = "button";
+            removeBtn.textContent = "Remove";
+            removeBtn.className = "btn";
+            removeBtn.style.marginLeft = "6px";
+            removeBtn.onclick = () => wrapper.remove();
+            wrapper.appendChild(textarea);
+            wrapper.appendChild(removeBtn);
+            container.appendChild(wrapper);
+        };
+
+        const reportForm = document.getElementById("reportForm");
+        const panel = document.getElementById("panel");
+        const successMessage = document.getElementById("successMessage");
+
+        reportForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const inGameName = document.getElementById("username").value.trim();
+            const discord = document.getElementById("discord").value.trim();
+            const desc = document.getElementById("desc").value.trim();
+
+            const contactInputs = document.querySelectorAll('#contactFields input[name="contact"]');
+            const contacts = Array.from(contactInputs).map(input => input.value.trim()).filter(Boolean);
+
+            const commentInputs = document.querySelectorAll('#commentFields textarea[name="comments"]');
+            const comments = Array.from(commentInputs).map(input => input.value.trim()).filter(Boolean);
+
+            const fileInput = document.getElementById("file");
+            const files = fileInput.files ? Array.from(fileInput.files) : [];
+            const base64Files = await Promise.all(files.map(file => {
+                return new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onload = () => resolve({
+                        name: file.name,
+                        type: file.type,
+                        data: reader.result.split(',')[1]
+                    });
+                    reader.onerror = reject;
+                    reader.readAsDataURL(file);
+                });
+            }));
+
+            const payload = {
+                type: "feedback",
+                username: "Feedback Reporter",
+                content: {
+                    reporter: {
+                        in_game_name: inGameName,
+                        discord: discord,
+                        contacts: contacts
+                    },
+                    description: desc,
+                    comments: comments,
+                    timestamp: new Date().toISOString(),
+                    files: base64Files // Attach base64 files
+                }
+            };
+
+            try {
+                const res = await fetch("https://webhook-manager.craftersmcguides.workers.dev/report", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(payload)
+                });
+
+                if (res.ok) {
+                    panel.classList.add("report-show");
+                    setTimeout(() => {
+                        panel.classList.remove("report-show");
+                        successMessage.style.display = "block";
+                        reportForm.reset();
+                        document.getElementById('contactFields').innerHTML = "";
+                        document.getElementById('commentFields').innerHTML = "";
+                    }, 2000);
+                } else {
+                    const errorText = await res.text();
+                    console.error("Server error:", errorText);
+                    alert("Error submitting feedback. Server responded with: " + res.status);
+                }
+            } catch (err) {
+                console.error("Error:", err);
+                alert("An error occurred. Check console.");
+            }
+        });
+
+        async function testConnection() {
+            try {
+                const testRes = await fetch("https://webhook-manager.craftersmcguides.workers.dev/report", {
+                    method: "OPTIONS"
+                });
+                console.log("CORS test:", testRes.status);
+            } catch (err) {
+                console.error("Connection test failed:", err);
+            }
+        }
+        
+        testConnection();
+    </script>
+</body>
+</html>

@@ -1,0 +1,387 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <link rel="icon" href="assets/cmc-icon.png" type="image/png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta property="og:title" content="CraftersMC Leaderboards Submission Portal">
+  <meta property="og:description"
+    content="Submit your information to be considered for inclusion in the CraftersMC Leaderboards. Provide proof and details for accurate ranking!">
+  <meta property="og:image"
+    content="https://cdn.discordapp.com/attachments/1416722412032229457/1423270231740256256/Screenshot_20250524-2112033.png?ex=68dfb332&is=68de61b2&hm=809b90de9e5b77d767b558b836bb6b6f1cf3bf58f6e45a168400aa8654409a4c&">
+  <meta property="og:url" content="https://craftersmc-guides.pages.dev/leaderboards-submission.html">
+  <meta property="og:type" content="website">
+  <meta name="theme-color" content="#007bff">
+  <meta name="twitter:card" content="summary_large_image" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <script src="js/script.js" defer></script>
+  <script src="js/api-proxy-client.js"></script>
+  <script src="js/leaderboards-api.js"></script>
+  <link rel="stylesheet" href="css/essential.css">
+  <link rel="stylesheet" href="css/event.css">
+  <title>CraftersMC Guides - Leaderboards Submission Portal</title>
+
+  <style>
+    h1 {
+      font-size: 22px;
+      margin-bottom: 14px;
+      text-align: center;
+      font-weight: 600;
+    }
+
+    body {
+      background: url('Backgrounds/image8298.webp') no-repeat center center fixed;
+      font-family: Arial, sans-serif;
+      background-size: cover;
+    }
+
+    form {
+      background: #ffffff25;
+      border: 2px solid #dfe3ea;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 6px 18px rgba(20, 30, 50, 0.06);
+      backdrop-filter: blur(10px);
+      width: 95%;
+      max-width: 800px;
+      margin: 0 auto 40px auto;
+      color: #fff;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    input[type=text],
+    input[type=file],
+    textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #434343;
+      border-radius: 6px;
+      font-size: 14px;
+      background-color: #11111171;
+      color: #fff;
+    }
+
+    textarea {
+      resize: vertical;
+    }
+
+    .row {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .col {
+      flex: 1;
+    }
+
+    .note {
+      display: block;
+      font-size: 13px;
+      margin-top: 4px;
+      color: #ff2e2e;
+      text-shadow: 0px 0px 14px red;
+    }
+
+    #lbContainer label {
+      display: flex;
+      align-items: center;
+      padding: 4px 0;
+      font-size: 14px;
+      gap: 6px;
+      cursor: pointer;
+    }
+
+    details {
+      background: #ffffff10;
+      border-radius: 6px;
+      padding: 10px;
+    }
+
+    details summary {
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 14px;
+      padding: 4px 0;
+    }
+
+    .preview-img,
+    .preview-video {
+      margin-top: 8px;
+      max-width: 200px;
+      border-radius: 6px;
+      border: 1px solid #e3e6ea;
+    }
+
+    button[disabled] {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .status {
+      margin-top: 12px;
+      font-size: 14px;
+      font-weight: 500;
+      color: #5cff76;
+    }
+
+    #spinner {
+      font-size: 14px;
+      color: #444;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="loader">
+    <div></div>
+    <div></div>
+    <div></div>
+  </div>
+  <div class="top"></div>
+  <div class="sidebar" id="sidebar"></div>
+  <div id="sidebar-overlay" onclick="toggleSidebar()"></div>
+  <span class="material-icons" id="scrollToTopBtn">north</span>
+  <div class="gap"></div>
+  <h1>CraftersMC Guides - Leaderboards Submission Portal</h1>
+
+  <form id="submissionForm" autocomplete="off">
+
+    <div class="row">
+      <div class="col">
+        <label for="playerName">Player Ingame Name:</label>
+        <input id="playerName" name="playerName" type="text" required placeholder="Example: Notch123" />
+      </div>
+    </div>
+
+    <div style="margin-bottom: 12px;">
+      <label>Select Leaderboard(s)</label>
+      <div id="lbContainer" style="padding:8px;border:1px solid #e3e6ea;border-radius:6px;">
+        <div id="lbLoading">Loading leaderboards...</div>
+      </div>
+      <small class="note">Select at least one!</small>
+    </div>
+
+    <div style="margin-bottom:12px">
+      <label for="screenshot">Proof Upload (Multiple Allowed) Max 5MB each</label>
+      <input id="screenshot" type="file" name="image" required multiple accept="image/*,video/*" />
+      <small class="note">Accepted: images or videos | Max size per file: 5MB</small>
+      <div class="preview" id="previewContainer" aria-live="polite"></div>
+    </div>
+
+    <details style="margin-bottom:12px;">
+      <summary>Optional Information</summary>
+      <div id="contactFields">
+        <label>Contact Info</label>
+        <input type="text" name="contact" placeholder="Discord#1234 or Email" />
+      </div>
+      <button class="btn" type="button" id="addContactBtn" style="margin:6px 0;">+ Add Another Contact</button>
+
+      <div id="commentFields" style="margin-top:12px;">
+        <label>Comments</label>
+        <textarea name="comments" rows="3" placeholder="Anything you would like to mention"></textarea>
+      </div>
+      <button class="btn" type="button" id="addCommentBtn" style="margin-top:6px;">+ Add Another Comment</button>
+    </details>
+
+    <div style="display:flex;gap:10px;align-items:center;">
+      <button class="green-btn" type="submit" id="submitBtn">Submit</button>
+      <div id="spinner" style="display:none">Sending…</div>
+    </div>
+
+    <div class="status" id="status"></div>
+  </form>
+  <div id="footer"></div>
+
+  <script>
+    const WORKER_URL = '/leaderboard-submission-api'; // Now points to your Pages Function
+
+    const maxFileSize = 5 * 1024 * 1024;
+    const form = document.getElementById('submissionForm');
+    const screenshotInput = document.getElementById('screenshot');
+    const previewContainer = document.getElementById('previewContainer');
+    const status = document.getElementById('status');
+    const submitBtn = document.getElementById('submitBtn');
+    const spinner = document.getElementById('spinner');
+    const lbContainer = document.getElementById('lbContainer');
+
+    function renderLeaderboardOptions(items) {
+      lbContainer.innerHTML = '';
+
+      items.forEach(item => {
+        const label = document.createElement('label');
+        const value = item.name.replace(/\s+Leaderboards?$/i, '').trim();
+        label.innerHTML = `<input type="checkbox" name="leaderboards" value="${value}"> ${item.name}`;
+        lbContainer.appendChild(label);
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      try {
+        const payload = await leaderboardsApi.getCatalog();
+        const items = Array.isArray(payload.items) ? payload.items : [];
+
+        if (!items.length) {
+          throw new Error('No leaderboard items returned');
+        }
+
+        renderLeaderboardOptions(items);
+      } catch (error) {
+        console.error('Failed to load leaderboard catalog', error);
+        renderLeaderboardOptions([
+          { name: 'Collections Leaderboards' },
+          { name: 'Slayers Leaderboards' },
+          { name: 'Gems Leaderboard' },
+          { name: 'Playtime Leaderboard' },
+          { name: 'Achievements Leaderboard' },
+          { name: 'Average Skill Leaderboard' },
+          { name: 'Crafters Level Leaderboard' },
+          { name: 'Boss Time Leaderboards' },
+          { name: 'Cakes Leaderboard' },
+          { name: 'Farming Contests Leaderboards' }
+        ]);
+      }
+    });
+
+    let uploadedFiles = [];
+
+    screenshotInput.addEventListener('change', () => {
+      previewContainer.innerHTML = '';
+      uploadedFiles = [];
+
+      for (const file of screenshotInput.files) {
+        if (file.size > maxFileSize) {
+          status.textContent = `One or more files exceed 5MB limit.`;
+          screenshotInput.value = '';
+          return;
+        }
+
+        // Store the real File object
+        uploadedFiles.push(file);
+
+        const reader = new FileReader();
+        reader.onload = () => {
+          if (file.type.startsWith('image/')) {
+            const img = document.createElement('img');
+            img.className = 'preview-img';
+            img.src = reader.result;
+            previewContainer.appendChild(img);
+          } else if (file.type.startsWith('video/')) {
+            const vid = document.createElement('video');
+            vid.className = 'preview-video';
+            vid.src = reader.result;
+            vid.controls = true;
+            previewContainer.appendChild(vid);
+          }
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+
+    document.getElementById('addContactBtn').onclick = () => {
+      const container = document.getElementById('contactFields');
+      const wrapper = document.createElement('div');
+      wrapper.style.display = "flex";
+      wrapper.style.alignItems = "center";
+      wrapper.style.gap = "6px";
+      const input = document.createElement('input');
+      input.type = "text";
+      input.name = "contact";
+      input.placeholder = "Additional contact info";
+      input.style.marginTop = "6px";
+      const removeBtn = document.createElement('button');
+      removeBtn.type = "button";
+      removeBtn.textContent = "Remove";
+      removeBtn.className = "btn";
+      removeBtn.style.marginLeft = "6px";
+      removeBtn.onclick = () => wrapper.remove();
+      wrapper.appendChild(input);
+      wrapper.appendChild(removeBtn);
+      container.appendChild(wrapper);
+    };
+
+    document.getElementById('addCommentBtn').onclick = () => {
+      const container = document.getElementById('commentFields');
+      const wrapper = document.createElement('div');
+      wrapper.style.display = "flex";
+      wrapper.style.alignItems = "center";
+      wrapper.style.gap = "6px";
+      const textarea = document.createElement('textarea');
+      textarea.name = "comments";
+      textarea.rows = 3;
+      textarea.placeholder = "Additional comment";
+      textarea.style.marginTop = "6px";
+      const removeBtn = document.createElement('button');
+      removeBtn.type = "button";
+      removeBtn.textContent = "Remove";
+      removeBtn.className = "btn";
+      removeBtn.style.marginLeft = "6px";
+      removeBtn.onclick = () => wrapper.remove();
+      wrapper.appendChild(textarea);
+      wrapper.appendChild(removeBtn);
+      container.appendChild(wrapper);
+    };
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      status.textContent = '';
+      submitBtn.disabled = true;
+      spinner.style.display = 'inline';
+
+      // Create FormData from form
+      const formData = new FormData(form);
+
+      // DEBUG: Log form data
+      console.log('FormData contents:');
+      for (let [key, value] of formData.entries()) {
+        console.log(`${key}:`, value);
+      }
+
+      // Append uploaded files
+      for (const file of uploadedFiles) {
+        formData.append('image', file);
+        console.log('Appended file:', file.name, file.size, file.type);
+      }
+
+      try {
+        const res = await fetch(WORKER_URL, {
+          method: 'POST',
+          body: formData
+        });
+
+        console.log('Response status:', res.status);
+        const responseText = await res.text();
+        console.log('Response text:', responseText);
+
+        if (!res.ok) {
+          status.textContent = `Submission failed (${res.status}). Please try again.`;
+          status.style.color = 'red';
+        } else {
+          status.textContent = 'Submission successful!';
+          status.style.color = 'green';
+          form.reset();
+          previewContainer.innerHTML = '';
+          uploadedFiles = [];
+        }
+
+      } catch (err) {
+        console.error('Fetch error:', err);
+        status.textContent = 'Network error. Please try again.';
+        status.style.color = 'red';
+      }
+
+      submitBtn.disabled = false;
+      spinner.style.display = 'none';
+    });
+  </script>
+</body>
+
+</html>
