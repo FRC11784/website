@@ -270,7 +270,7 @@ span.no_selection {
 .navbar a img {
     margin-top: 1px;
     margin-left: 30px;
-    max-width: calc(100%);
+    max-width: calc(100% - 5px);
     object-fit: contain;
     animation: logoPopIn 1.5s ease-out;
 }
