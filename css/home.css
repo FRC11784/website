@@ -53,7 +53,7 @@ body {
     min-width: 100%;
     min-height: 100%;
     z-index: 0;
-    background: url("../Backgrounds/welcome_skyline.webm");
+    background: url("../assets/backgrounds/welcome_skyline.webm");
 } */
 
 .hero-container {
@@ -84,13 +84,13 @@ body {
     animation: fadeIn 1.5s ease-out;
     background:
         linear-gradient(rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.9)),
-        url("../Backgrounds/AlconburyFTCInAGame.jpg")
+        url("../assets/backgrounds/AlconburyFTCInAGame.jpg")
         no-repeat center center / cover;
 }
 
 
 .background {
-    background: url("../Backgrounds/GreenBGGears.png") no-repeat center center/cover;
+    background: url("../assets/backgrounds/GreenBGGears.png") no-repeat center center/cover;
     background-color: #847474;
     background-blend-mode: multiply;
     background-size: cover;
