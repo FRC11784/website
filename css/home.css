@@ -83,7 +83,7 @@ body {
     z-index: 3;
     animation: fadeIn 1.5s ease-out;
     background:
-        linear-gradient(rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.55)),
+        linear-gradient(rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.9)),
         url("../Backgrounds/AlconburyFTCInAGame.jpg")
         no-repeat center center / cover;
 }
