@@ -79,13 +79,18 @@ body {
     text-align: center;
     color: white;
     padding: 20px;
-    height: calc(100vh - 56px);
+    height: calc(100vh);
     z-index: 3;
     animation: fadeIn 1.5s ease-out;
+    background:
+        linear-gradient(rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.55)),
+        url("../Backgrounds/AlconburyFTCInAGame.jpg")
+        no-repeat center center / cover;
 }
 
+
 .background {
-    background: url("../Backgrounds/IMG_4504.webp");
+    background: url("../Backgrounds/GreenBGGears.png") no-repeat center center/cover;
     background-color: #847474;
     background-blend-mode: multiply;
     background-size: cover;
@@ -199,42 +204,6 @@ body {
     padding: 15px 25px; 
     font-size: 1.3rem; 
     background-color: rgba(0, 0, 0, 0.5);
-}
-
-.bottom-nav {
-    background: linear-gradient(90deg, #353535da, #262525da, #111111da);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(18px);
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    padding: 10px 0;
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    z-index: 20;
-}
-
-.bottom-nav a {
-    text-decoration: none;
-    color: #fff;
-    font-size: 0.8rem;
-    text-align: center;
-}
-
-.bottom-nav a:hover {
-    color: var(--primary-color-hover);
-}
-
-.bottom-nav .nav-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 5px;
-}
-
-.bottom-nav .nav-item span {
-    font-size: 1.5rem;
 }
 
 .card-container {

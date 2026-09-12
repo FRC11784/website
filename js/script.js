@@ -109,8 +109,6 @@ document.addEventListener("click", (event) => {
 });
 
 function fetchPartial(url, key) {
-  const cached = localStorage.getItem(key);
-  if (cached) return Promise.resolve(cached);
   return fetch(url)
     .then((res) => res.text())
     .then((html) => {
@@ -121,7 +119,7 @@ function fetchPartial(url, key) {
 
 function fetchAllPartials() {
   Promise.all([
-    fetchPartial("../navbarv2.html", "navbarHtml"),
+    fetchPartial("../navbar.html", "navbarHtml"),
     fetchPartial("../sidebar.html", "sidebarHtml"),
     fetchPartial("../footer.html", "footerHtml"),
     fetchPartial("../loader.html", "loaderHtml"),

@@ -1,8 +1,8 @@
 :root {
     --card-shadow-color: rgba(0, 0, 0, 0.2);
-    --primary-color: #007bff !important;
-    --primary-text-color: #007bff;
-    --primary-color-hover: #0069b9 !important;
+    --primary-color: #0aa303 !important;
+    --primary-text-color: #0aa303;
+    --primary-color-hover: #078e00 !important;
     --disabled-bg-color: #888888;
     --text-color: black;
     --selection-bg-color: black;
@@ -10,16 +10,16 @@
     --table-border: #ccc;
 
     --card-bg-color: #ffffff99;
-    --border-color: #7aa5d0;
-    --body-bg: #f8f9fa;
+    --border-color: #88d07a;
+    --body-bg: #f8faf8;
     --card-bg-hover: #e2e6ea;
     --main-text-color: #212529;
     --secondary-text-color: #6c757d;
-    --navbar-center-color: #262525da !important;
+    --navbar-center-color: #0aa303da !important;
     --glass-bg: #262525da;
-    --sidebar-btn-sec-color: #006bff;
-    --navbar-end: #111111da;
-    --navbar-light: #353535da;
+    --sidebar-btn-sec-color: #078e00;
+    --navbar-end: #078e00da;
+    --navbar-light: #20bd18da;
 
     --gw-border: #000000;
     /* Proile.html */
@@ -32,9 +32,9 @@
 
 .darkmode {
     --card-shadow-color: rgba(0, 0, 0, 0.2);
-    --primary-color: #007bff !important;
-    --primary-text-color: #007bff;
-    --primary-color-hover: #3a9dff !important;
+    --primary-color: #0aa303 !important;
+    --primary-text-color: #0aa303;
+    --primary-color-hover: #078e00 !important;
     --navbar-center-color: #262525ca !important;
     --disabled-bg-color: #2f2f2f;
     --text-color: #ffffff;
@@ -183,7 +183,15 @@ html {
     display: none;
 }
 
-.right,
+.right {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    margin: 10px;
+    width: 70px;
+    height: 70px;
+}
 .left {
     display: flex;
     flex-direction: row;
@@ -261,8 +269,8 @@ span.no_selection {
 
 .navbar a img {
     margin-top: 1px;
-    margin-left: 25px;
-    max-width: calc(100% - 11px);
+    margin-left: 30px;
+    max-width: calc(100%);
     object-fit: contain;
     animation: logoPopIn 1.5s ease-out;
 }
