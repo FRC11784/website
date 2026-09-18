@@ -646,6 +646,21 @@ footer p {
     height: 24px;
 }
 
+a {
+    transition: all 0.3s ease;
+    text-decoration: none;
+    color: #66affd;
+    position: relative;
+    display: inline-block;
+    font-size: 16px;
+    line-height: 1.4;
+    font-weight: 600;
+}
+
+a:hover {
+    color: #007bff;
+}
+
 .footer a {
     transition: all 0.3s ease;
     text-decoration: none;

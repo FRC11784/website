@@ -1,0 +1,137 @@
+body {
+    font-family: Arial, sans-serif;
+    color: var(--main-text-color);
+    background: url("../assets/backgrounds/FRCRebuilt.png");
+    background-size: cover;
+    background-attachment: fixed;
+    background-position-x: center;
+}
+
+.container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px;
+    text-align: center;
+    margin-top: 5rem;
+    border-radius: 15px;
+}
+
+.background {
+
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+}
+
+.header {
+    padding: 40px;
+    background: #000000c7;
+    border-radius: 8px;
+}
+
+.section {
+    background: #000000c7;
+    padding: 20px;
+    margin-top: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    text-align: left;
+}
+
+
+ul li {
+    margin: 5px 25px;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.team {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+}
+
+.member {
+    padding: 15px;
+    border-radius: 8px;
+    text-align: center;
+    width: 220px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.advisor {
+    background: #0080ff38;
+    border: 2px solid #0080ff;
+}
+
+.writer {
+    background: #001fff38;
+    border: 2px solid #001fff;
+}
+
+.coder {
+    background: #ff000038;
+    border: 2px solid #f00;
+}
+.data {
+    background: #21b59538;
+    border: 2px solid #21b595;
+}
+
+.designer {
+    background: #ff00f838;
+    border: 2px solid #ff00f8;
+}
+
+.helper {
+    background: #ffd30d38;
+    border: 2px solid #ffd30d;
+}
+
+.member a {
+    text-decoration: none;
+    color: white;
+}
+
+.member h3 {
+    margin: 10px 0 5px;
+    display: flex;
+    text-align: center;
+    justify-content: center;
+}
+
+.member p {
+    font-size: 14px;
+}
+
+.link {
+    color: #8be9fd;
+    text-decoration: none;
+}
+
+.link:hover {
+    text-decoration: underline;
+}
+
+.pfp {
+    width: 100px;
+    height: 100px;
+    border-radius: 150px;
+}
+
+.tech-img {
+    width: 100%;
+    height: auto;
+    max-width: 400px;
+    border-radius: 10px;
+    margin-top: 20px;
+}
+ p {
+    font-size: 16px;
+    line-height: 1.5;
+    margin: 0px 10px;
+}
