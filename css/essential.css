@@ -781,6 +781,8 @@ button,
 button:hover,
 .btn:hover {
     background-color: var(--primary-color-hover);
+    color: #fff;
+    box-shadow: 4px var(--primary-color-hover);
 }
 
 button:active,

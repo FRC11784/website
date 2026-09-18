@@ -44,6 +44,17 @@ body {
     padding-bottom: calc(10px + 3rem);
     scroll-behavior: smooth;
 }
+body::before {
+    background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5));
+    z-index: 0;
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
 
 /* .bg-video {
     position: absolute;
@@ -130,7 +141,7 @@ body {
     position: relative;
     padding: 10px 20px;
     border-radius: 7px;
-    border: 1px solid rgb(0, 123, 255);
+    border: 1px solid #078e00;
     font-size: 14px;
     text-transform: uppercase;
     font-weight: 600;
@@ -146,8 +157,8 @@ body {
 }
 
 .startButton:hover {
-    background: rgb(0, 123, 255);
-    box-shadow: 0 0 30px 5px rgba(0, 123, 2255, 0.815);
+    background: #078e00;
+    box-shadow: 0 0 30px 5px rgba(7, 142, 0, 0.815);
     -webkit-transition: all 0.2s ease-out;
     -moz-transition: all 0.2s ease-out;
     transition: all 0.2s ease-out;
@@ -170,11 +181,6 @@ body {
     opacity: 0;
     background: #fff;
     box-shadow: 0 0 50px 30px #fff;
-    -webkit-transform: skewX(-20deg);
-    -moz-transform: skewX(-20deg);
-    -ms-transform: skewX(-20deg);
-    -o-transform: skewX(-20deg);
-    transform: skewX(-20deg);
 }
 
 @keyframes sh02 {
@@ -239,8 +245,8 @@ body {
 
 .card:hover {
     transform: scale(1.05);
-    box-shadow: 0 0 20px rgba(9, 117, 241, 0.8);
-    border: 1px solid #0974f1;
+    box-shadow: 0 0 20px rgba(7, 142, 0, 0.8);
+    border: 1px solid #078e00;
 }
 
 .card.development::before {
